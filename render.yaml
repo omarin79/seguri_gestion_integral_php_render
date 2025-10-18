@@ -1,0 +1,45 @@
+services:
+  # Servicio Web (Tu aplicación PHP)
+  - type: web
+    name: seguri-gestion-web
+    env: docker
+    # Reemplaza 'tu-usuario/seguri-gestion:1.0' con el nombre de tu imagen en Docker Hub
+    image:
+      url: tu-usuario/seguri-gestion:1.0
+    plan: free # o 'starter' para más recursos
+    ports:
+      - port: 80
+    envVars:
+      - key: MYSQL_HOST
+        fromService:
+          type: pserv
+          name: seguri-gestion-db
+          property: host
+      - key: MYSQL_DATABASE
+        fromService:
+          type: pserv
+          name: seguri-gestion-db
+          property: database
+      - key: MYSQL_USER
+        fromService:
+          type: pserv
+          name: seguri-gestion-db
+          property: user
+      - key: MYSQL_PASSWORD
+        fromService:
+          type: pserv
+          name: seguri-gestion-db
+          property: password
+    # Disco persistente para los archivos subidos (fotos, etc.)
+    disk:
+      name: uploads-disk
+      mountPath: /var/www/html/uploads
+      sizeGB: 1
+
+  # Servicio de Base de Datos (MySQL)
+  - type: pserv
+    name: seguri-gestion-db
+    engine: mysql
+    plan: free # o 'starter'
+    disk:
+      sizeGB: 1
