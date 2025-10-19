@@ -1,8 +1,4 @@
 <?php
-// Líneas agregadas para mostrar errores en Render
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 // C:\xampp\htdocs\securigestion\Seguri_gestion_integral_PHP\index.php (Versión Corregida y Estable)
 
 session_start();
