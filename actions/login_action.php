@@ -8,14 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verifica campos vacíos
     if (empty($documento) || empty($password)) {
-        // CORREGIDO: Asegurar 'Location:'
         header('Location: ../index.php?page=login&error=empty_fields');
         exit();
     }
 
     try {
-        // Usar "Usuarios" con comillas dobles y U mayúscula
-        $stmt = $pdo->prepare("SELECT * FROM \"Usuarios\" WHERE documentoidentidad = ?");
+        // ¡CAMBIO AQUÍ! -> Volver a "usuarios" minúsculas sin comillas
+        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE documentoidentidad = ?");
         $stmt->execute([$documento]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -28,25 +27,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_foto'] = $user['fotoperfilruta'];
             $_SESSION['user_rol_id'] = $user['id_rol'];
 
-            // CORREGIDO: Asegurar 'Location:'
             header('Location: ../index.php?page=inicio');
             exit();
         } else {
             // Credenciales inválidas
-            // CORREGIDO: Asegurar 'Location:'
             header('Location: ../index.php?page=login&error=invalid_credentials');
             exit();
         }
     } catch (PDOException $e) {
         // Error de base de datos
         error_log("Login PDOException: " . $e->getMessage());
-        // CORREGIDO: Asegurar 'Location:' (Esta era la línea 55 del error)
         header('Location: ../index.php?page=login&error=db_error');
         exit();
     }
 } else {
     // Acceso no POST
-    // CORREGIDO: Asegurar 'Location:'
     header('Location: ../index.php?page=login');
     exit();
 }
