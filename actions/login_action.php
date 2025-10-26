@@ -13,8 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // ¡CAMBIO AQUÍ! -> Volver a "usuarios" minúsculas sin comillas
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE documentoidentidad = ?");
+        // *** ¡LA LÍNEA CORRECTA ES ESTA! ***
+        // Usar "Usuarios" con comillas dobles y U mayúscula
+        $stmt = $pdo->prepare("SELECT * FROM \"Usuarios\" WHERE documentoidentidad = ?");
         $stmt->execute([$documento]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
