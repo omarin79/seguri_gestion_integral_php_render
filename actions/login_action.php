@@ -20,10 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Log: Intentando preparar la consulta
-        $sql = "SELECT * FROM \"Usuarios\" WHERE documentoidentidad = ?";
+        // *** ¡CAMBIO AQUÍ! Añadir "public". ***
+        $sql = "SELECT * FROM \"public\".\"Usuarios\" WHERE documentoidentidad = ?";
         error_log("login_action.php: Preparando SQL: " . $sql);
 
-        // Usar "Usuarios" con comillas dobles y U mayúscula
+        // Preparar la consulta
         $stmt = $pdo->prepare($sql);
 
         // Log: Ejecutando consulta
