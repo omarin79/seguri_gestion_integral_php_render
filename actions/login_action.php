@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Log: Intentando preparar la consulta
-        // *** ¡CAMBIO AQUÍ! Añadir "public". ***
+        // Usar "public"."Usuarios", pero columna WHERE en minúsculas
         $sql = "SELECT * FROM \"public\".\"Usuarios\" WHERE documentoidentidad = ?";
         error_log("login_action.php: Preparando SQL: " . $sql);
 
@@ -35,17 +35,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("login_action.php: Consulta ejecutada. Fetching user...");
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Verifica usuario y contraseña (claves leídas en minúsculas)
-        if ($user && password_verify($password, $user['contrasenahash'])) {
+        // Verifica usuario y contraseña (usando nombres de columna con Mayúsculas)
+        // *** ¡CAMBIOS CLAVE AQUÍ! ***
+        if ($user && password_verify($password, $user['ContrasenaHash'])) {
             // Log: Usuario encontrado y contraseña válida
-            error_log("login_action.php: Usuario encontrado y contraseña válida para ID: " . $user['id_usuario']);
+            error_log("login_action.php: Usuario encontrado y contraseña válida para ID: " . $user['ID_Usuario']);
 
-            // Guardar en sesión (claves leídas en minúsculas)
-            $_SESSION['user_id'] = $user['id_usuario'];
-            $_SESSION['user_nombre'] = $user['nombre'] . ' ' . $user['apellido'];
-            $_SESSION['user_doc'] = $user['documentoidentidad'];
-            $_SESSION['user_foto'] = $user['fotoperfilruta'];
-            $_SESSION['user_rol_id'] = $user['id_rol'];
+            // Guardar en sesión (usando nombres de columna con Mayúsculas)
+             // *** ¡CAMBIOS CLAVE AQUÍ! ***
+            $_SESSION['user_id'] = $user['ID_Usuario'];
+            $_SESSION['user_nombre'] = $user['Nombre'] . ' ' . $user['Apellido'];
+            $_SESSION['user_doc'] = $user['DocumentoIdentidad'];
+            $_SESSION['user_foto'] = $user['FotoPerfilRuta'];
+            $_SESSION['user_rol_id'] = $user['ID_Rol'];
 
             // Log: Redirigiendo a inicio
             error_log("login_action.php: Redirigiendo a inicio.");
