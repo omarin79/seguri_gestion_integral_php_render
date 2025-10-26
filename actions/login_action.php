@@ -12,20 +12,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("SELECT * FROM Usuarios WHERE DocumentoIdentidad = ?");
+        // Cambiado a minúsculas: "usuarios" y "documentoidentidad"
+        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE documentoidentidad = ?");
         $stmt->execute([$documento]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['ContrasenaHash'])) {
-            $_SESSION['user_id'] = $user['ID_Usuario'];
-            $_SESSION['user_nombre'] = $user['Nombre'] . ' ' . $user['Apellido'];
-            $_SESSION['user_doc'] = $user['DocumentoIdentidad'];
-            // LÍNEA CLAVE: Guarda la ruta de la foto en la sesión
-            $_SESSION['user_foto'] = $user['FotoPerfilRuta'];
-            
-            // --- LÍNEA AÑADIDA ---
-            // Se guarda el ID del rol para filtrar los checklists
-            $_SESSION['user_rol_id'] = $user['ID_Rol'];
+        // Cambiado a minúsculas: "contrasenahash"
+        if ($user && password_verify($password, $user['contrasenahash'])) {
+            // Cambiado a minúsculas las claves de sesión si es necesario (mejor mantenerlas consistentes)
+            // y los nombres de columnas al leer: 'id_usuario', 'nombre', 'apellido', etc.
+            $_SESSION['user_id'] = $user['id_usuario'];
+            $_SESSION['user_nombre'] = $user['nombre'] . ' ' . $user['apellido'];
+            $_SESSION['user_doc'] = $user['documentoidentidad'];
+            $_SESSION['user_foto'] = $user['fotoperfilruta']; // Asegúrate que esta columna exista y esté en minúsculas
+            $_SESSION['user_rol_id'] = $user['id_rol']; // Asegúrate que esta columna exista y esté en minúsculas
 
             header('Location: ../index.php?page=inicio');
             exit();
@@ -34,8 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
     } catch (PDOException $e) {
+        // Podríamos añadir un log del error real para depurar mejor
+         error_log("Login PDOException: " . $e->getMessage()); // Añade esto si quieres ver el error exacto en los logs de Render
         header('Location: ../index.php?page=login&error=db_error');
         exit();
     }
+} else {
+    header('Location: ../index.php?page=login');
+    exit();
 }
 ?>
